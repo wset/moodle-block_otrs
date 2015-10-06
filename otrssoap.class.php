@@ -78,13 +78,13 @@ class otrssoap {
         }
 
         return $result;
-    } 
+    }
 
     //
-    // CUSTOMER USER OBJECT 
+    // CUSTOMER USER OBJECT
     //
 
-    /** 
+    /**
      * Add custom fields
      */
     private function addCustomFields( &$params, $profile ) {
@@ -137,7 +137,7 @@ class otrssoap {
             'UserLogin' => $user->username,
             'UserEmail' => $user->email,
             'ValidID' => 1,
-            'UserID' => $this->agentid, 
+            'UserID' => $this->agentid,
             'moodle_url' => fullname( $user ),
             'moodleID' => $user->id,
             );
@@ -150,7 +150,7 @@ class otrssoap {
      * Update existing customer user
      * param object $user moodle user object
      */
-    public function CustomerUserUpdate( $user, $profile ) {
+    public function CustomerUserUpdate( $user, $profile, $olduser ) {
         global $CFG;
 
         $object = 'CustomerUserObject';
@@ -164,10 +164,15 @@ class otrssoap {
             'UserLogin' => $user->username,
             'UserEmail' => $user->email,
             'ValidID' => 1,
-            'UserID' => $this->agentid, 
+            'UserID' => $this->agentid,
             'moodle_url' => fullname( $user ),
             'moodleID' => $user->id,
             );
+
+        //  Change userlogins for existing accounts
+        if (!empty( $olduser )) {
+            $params['ID'] = $olduser;
+        }
         self::addCustomFields( $params, $profile );
         $this->dispatch( $object,$method,$params );
         return true;
@@ -189,7 +194,7 @@ class otrssoap {
 
     /**
      * Search for username
-     * @param string Username 
+     * @param string Username
      */
     public function CustomerIDs( $Username ) {
         $object = 'CustomerUserObject';
@@ -203,7 +208,7 @@ class otrssoap {
 
     /**
      * Search for user data
-     * @param string Username 
+     * @param string Username
      */
     public function CustomerUserDataGet( $Username ) {
         $object = 'CustomerUserObject';
@@ -214,6 +219,21 @@ class otrssoap {
         $Data = $this->dispatch( $object, $method, $params );
         return self::unserialise($Data);
     }
+
+    /**
+     * Search for user by email
+     * @param string Email
+     */
+    public function CustomerEmailSearch( $Email ) {
+        $object = 'CustomerUserObject';
+        $method = 'CustomerSearch';
+        $params = array(
+            'PostMasterSearch' => $Email,
+            );
+        $Data = $this->dispatch( $object, $method, $params );
+        return self::unserialise($Data);
+    }
+
 
     //
     // TICKET OBJECT
@@ -259,7 +279,7 @@ class otrssoap {
             $queuename = $CFG->block_otrs_user_update_queue;
         } else {
             $queuename = $CFG->block_otrs_queue;
-        } 
+        }
         $object = 'TicketObject';
         $method = 'TicketCreate';
         $params = array(
@@ -299,8 +319,8 @@ class otrssoap {
             'ContentType' => "$mimetype; charset=UTF8",
             );
         $ArticleID = $this->dispatch( $object, $method, $params );
-        return $ArticleID;         
-    } 
+        return $ArticleID;
+    }
 
     /**
      * Search for tickets by customer login (username)
@@ -413,8 +433,8 @@ class otrssoap {
         return $assoc;
     }
 
-    /** 
-     * Make sure result is an array (one result can be integer) 
+    /**
+     * Make sure result is an array (one result can be integer)
      */
     static function arrayize( $List ) {
         if (empty($List)) {

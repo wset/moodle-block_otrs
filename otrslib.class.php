@@ -230,6 +230,13 @@ class otrslib {
         // try for OTRS user
         $customer = $otrssoap->CustomerUserDataGet( $user->username );
 
+        if(empty( $customer )) {
+            // If no customer with username then check for email address.
+            $newcustomers = $otrssoap->CustomerEmailSearch( $user->email );
+            if(!empty( $newcustomers )){
+                $existinguser = array_keys($newcustomers)[0];
+            }
+        }
 
         // get custom profile fields
         $profile = otrslib::getProfileFields( $user->id );
