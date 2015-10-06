@@ -24,7 +24,7 @@ class block_otrs extends block_base {
 
     function has_config() {
         return true;
-    } 
+    }
 
     function get_content () {
         global $USER, $CFG, $COURSE;
@@ -96,36 +96,10 @@ class block_otrs extends block_base {
         $userids = $DB->get_records( 'user', array('deleted'=>0), '', 'id' );
         mtrace( 'processing users - '.count($userids) );
 
-        // get users from otrs
-        $otrssoap = new otrssoap();
-
         // run through users
         echo "\n";
         foreach ($userids as $userid) {
-
-            // get full record
-            $user = $DB->get_record( 'user', array('id'=>$userid->id) );
-
-            // don't add guest or primary admin
-            if ($user->id <= 2) {
-                continue;
-            }
-
-            // try for OTRS user
-            $customer = $otrssoap->CustomerUserDataGet( $user->username );
-
-            // get custom profile fields
-            $profile = otrslib::getProfileFields( $user->id );
-
-            // are we adding or updating
-            if (!empty( $customer )) {
-                mtrace( 'updating '.fullname( $user ) );
-                $otrssoap->CustomerUserUpdate( $user, $profile );
-            }
-            else {
-                mtrace( 'adding '.fullname( $user ) );
-                $otrssoap->CustomerUserAdd( $user, $profile );
-            }
+            otrslib::userupdate($userid);
         }
 
         return true;

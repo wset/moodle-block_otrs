@@ -40,7 +40,7 @@ function block_otrs_user_updated($event) {
                 }
             }
         }
-        
+
         // create a ticket in OTRS
         $subject = 'User updated notification for ' . $event->username;
         $message = 'User ' . $event->username . ' has updated their user details for ' . $changestring;
@@ -53,4 +53,7 @@ function block_otrs_user_updated($event) {
         $ArticleID = $otrssoap->ArticleCreate( $TicketID, $subject, $message, $USER->email, 'Support', 'text/plain' );
         $success = $otrssoap->TicketCustomerSet( $TicketID, $Data['UserCustomerID'], $Data['UserLogin'] );
     }
+
+    // update user record on OTRS.
+    otrslib::userupdate($event);
 }

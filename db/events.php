@@ -23,4 +23,10 @@ $handlers = array(
         'schedule' => 'instant',
         'internal' => 1,
     ),
+    'user_created' => array(
+        'handlerfile' => '/blocks/otrs/lib.php',
+        'handlerfunction' => 'block_otrs_user_updated',
+        'schedule' => 'instant',
+        'internal' => 1,
+    ),
 );

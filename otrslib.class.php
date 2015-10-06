@@ -45,13 +45,13 @@ class otrslib {
      * Delete closed tickets that are too old
      */
     private static function deleteAgedTickets( $Tickets ) {
-        
+
         // array to hold cleaned up list
         $tickets_clean = array();
 
         // iterate through tickets checking
         foreach ($Tickets as $Ticket) {
-        
+
             // if not a closed ticket then we don't care
             if (stripos($Ticket->State,'closed')===false) {
                 $tickets_clean[] = $Ticket;
@@ -96,7 +96,7 @@ class otrslib {
             $tickets[] = (object)$BlockTicket;
         }
 //echo "<pre>"; print_r($tickets); die;
-        
+
         return self::deleteAgedTickets( $tickets );
     }
 
@@ -136,7 +136,7 @@ class otrslib {
                 $FilteredArticles[] = $Article;
             }
         }
- 
+
         return $FilteredArticles;
     }
 
@@ -153,7 +153,7 @@ class otrslib {
      * Re-open closed ticket
      */
     static function ReopenTicket( $TicketID ) {
-        
+
         // get current state
         $Ticket = self::getTicket( $TicketID );
         $state = $Ticket['State'];
@@ -211,6 +211,41 @@ class otrslib {
         else {
             return null;
         }
+    }
+
+    static function userupdate( $userid ) {
+        global $DB;
+
+        // get users from otrs
+        $otrssoap = new otrssoap();
+
+        // get full record
+        $user = $DB->get_record( 'user', array('id'=>$userid->id) );
+
+        // don't add guest or primary admin
+        if ($user->id <= 2) {
+            return true;
+        }
+
+        // try for OTRS user
+        $customer = $otrssoap->CustomerUserDataGet( $user->username );
+
+
+        // get custom profile fields
+        $profile = otrslib::getProfileFields( $user->id );
+
+        // are we adding or updating
+        if (!empty( $customer )) {
+            mtrace( 'updating '.fullname( $user ) );
+            $otrssoap->CustomerUserUpdate( $user, $profile, null );
+        } else if (!empty( $existinguser )){
+            mtrace( 'updating '.fullname( $user ) );
+            $otrssoap->CustomerUserUpdate( $user, $profile, $existinguser);
+        } else {
+            mtrace( 'adding '.fullname( $user ) );
+            $otrssoap->CustomerUserAdd( $user, $profile );
+        }
+        return true;
     }
 
 }
