@@ -60,7 +60,7 @@
             [ 'UserPassword',   'Password',   'pw',         0, 0, 'var', '', 0 ],
             [ 'UserEmail',      'Email',      'email',      1, 1, 'var', '', 0 ],
 
-#            [ 'UserEmail',      'Email', 'email',           1, 1, 'var', '$Env{"CGIHandle"}?Action=AgentTicketCompose&ResponseID=1&TicketID=$Data{"TicketID"}&ArticleID=$Data{"ArticleID"}', 0 ],
+#            [ 'UserEmail',      'Email', 'email',           1, 1, 'var', '[% Env("CGIHandle") %]?Action=AgentTicketCompose&ResponseID=1&TicketID=[% Data.TicketID %]&ArticleID=[% Data.ArticleID %]', 0 ],
             [ 'UserCustomerID', 'CustomerID', 'customer_id', 0, 1, 'var', '', 0 ],
 
 #            [ 'UserCustomerIDs', 'CustomerIDs', 'customer_ids', 1, 0, 'var', '', 0 ],
@@ -75,6 +75,7 @@
             [ 'ValidID',          'Valid',       'valid_id',     0, 1, 'int', '', 0 ],
             [ 'candidate_number', 'CandNo', 'candidate_number',1,0,'var','', 0],
             [ 'programme_provider', 'PPV', 'programme_provider',1,0,'var','', 0],
+#            [ 'moodle_url', 'Profile', 'moodle_url',1,0,'var','http://path.to.moodle/user/view.php?id=[% Data.moodleID | url %]', 0, '_moodle'],
             [ 'moodle_url', 'Profile', 'moodle_url',1,0,'var','', 0],
         ],
 
