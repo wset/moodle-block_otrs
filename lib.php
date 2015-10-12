@@ -34,9 +34,12 @@ function block_otrs_user_updated($event) {
             }
             if (isset($userarr[$key]) && ($userarr[$key] != $value)) {
                 if ($key == 'password') {
-                    $changestring .= 'password, ';
-                } else {
-                    $changestring .= "$key - " . $value . ", ";
+                    $changestring .= get_string('password'). ",<br />";
+                } if ($key == 'country') {
+                    $countries = get_string_manager()->get_list_of_countries(false);
+                    $changestring .= get_string('country') . " - " . $countries[$value] . ",<br />";
+                }else {
+                    $changestring .= get_string($key) . " - " . $value . ",<br />";
                 }
             }
         }
