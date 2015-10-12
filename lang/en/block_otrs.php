@@ -14,6 +14,7 @@
 $string['activetickets'] = 'Active tickets';
 $string['addcomment'] = 'Add comment';
 $string['addcommentinfo'] = 'Provide further information about your issue';
+$string['attachments'] = 'Attachments';
 $string['blockname'] = 'Help Desk';
 $string['closedtickets'] = 'Closed tickets';
 $string['comment'] = 'Comment';

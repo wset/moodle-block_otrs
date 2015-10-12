@@ -61,10 +61,15 @@ if ($mform->is_cancelled()) {
 
     // get mimetype from format
     $mimetype = otrslib::getMimetype( $comment['format'] );
+    
+    // get attachments
+    $fs = get_file_storage();
+    $context = context_user::instance($USER->id);
+    $attachments = $fs->get_area_files($context->id, 'user', 'draft', $data->attachments, 'id DESC', false);
 
     // add a comment to ticket
 
-    $Ticket = $otrssoap->ArticleCreate( $TicketID, '"'. fullname($USER) .'" <'.$USER->email.'>', $subject, $comment['text']);
+    $Ticket = $otrssoap->ArticleCreate( $TicketID, '"'. fullname($USER) .'" <'.$USER->email.'>', $subject, $comment['text'], 'customer', 'webrequest', $mimetype, array(), $attachments );
 
     // back to course
     redirect( $url, get_string( 'commentadded','block_otrs' ), 3 );

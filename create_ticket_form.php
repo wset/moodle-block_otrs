@@ -38,11 +38,14 @@ class create_ticket_form extends moodleform {
         $mform->setDefault( 'description', $customdata['description'] );
         $mform->addRule( 'description', null, 'required' );
         //$mform->addElement( 'format','format',get_string('format') );
-
+        
+        $mform->addElement( 'filemanager', 'attachments', get_string( 'attachments','block_otrs' ), null, array('subdirs' => 0));
+        
         // hidden field
         $mform->addElement( 'hidden','id',$customdata['id'] );
         $mform->setType('id', PARAM_INT);
 
         $this->add_action_buttons();
     }
+    
 }

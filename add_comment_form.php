@@ -43,6 +43,8 @@ class add_comment_form extends moodleform {
             );
         $mform->setType( 'comment', PARAM_RAW );
         $mform->addRule( 'comment', null, 'required' );
+        
+        $mform->addElement( 'filemanager', 'attachments', get_string( 'attachments','block_otrs' ), null, array('subdirs' => 0));
 
         // hidden field
         $mform->addElement( 'hidden','id',$customdata['id'] );

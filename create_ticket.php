@@ -58,10 +58,14 @@ if ($mform->is_cancelled()) {
     // get mimetype from format
     $mimetype = otrslib::getMimetype( $description['format'] );
 
+    // get attachments
+    $fs = get_file_storage();
+    $context = context_user::instance($USER->id);
+    $attachments = $fs->get_area_files($context->id, 'user', 'draft', $data->attachments, 'id DESC', false);
+   
     // create a ticket in OTRS
     $otrssoap = new otrsgenericinterface();
-    $Ticket = $otrssoap->TicketCreate( $USER->username, $subject, $description['text']);
-
+    $Ticket = $otrssoap->TicketCreate( $USER->username, $subject, $description['text'], null, 'customer', 'webrequest', $mimetype, 3, array(), $attachments );
 
     // back to course
     $PAGE->set_url('/blocks/otrs/create_ticket.php', array('id'=>$courseid));

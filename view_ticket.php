@@ -61,7 +61,7 @@ else {
 
 // get ticket
 $otrssoap = new otrsgenericinterface();
-$Tickets = $otrssoap->GetTicket( $TicketID, true );
+$Tickets = $otrssoap->GetTicket( $TicketID, true, false, true );
 $Ticket = $Tickets[0];
 
 // get title
@@ -97,6 +97,15 @@ echo $OUTPUT->heading( $title );
 echo $renderer->ArticleTable( $Articles, $ticketurl, $SelectedArticle->ArticleID );
 
 echo $renderer->SingleArticle( $SelectedArticle, $format );
+
+if( isset($SelectedArticle->Attachment) ) {
+    if( is_array($SelectedArticle->Attachment) ) {
+        $attachments = $SelectedArticle->Attachment; 
+    } else {
+        $attachments = array($SelectedArticle->Attachment);
+    }
+    echo $renderer->AttachmentList( $attachments );
+}
 
 if ($userid == $USER->id) {
     $link = new moodle_url('/blocks/otrs/add_comment.php', array('id'=>$id, 'ticket'=>$TicketID, 'courseid'=>$courseid));

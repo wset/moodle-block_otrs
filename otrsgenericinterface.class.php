@@ -86,7 +86,7 @@ class otrsgenericinterface {
         return $result;
     }
 
-    public function TicketCreate( $Customer, $Title, $message, $queue , $sendertype = 'customer', $articletype = 'webrequest', $mimetype='text/html', $priority = 3, $extraticketparams = array(), $extraarticleparams = array(), $dynamicfields = array()) {
+    public function TicketCreate( $Customer, $Title, $message, $queue , $sendertype = 'customer', $articletype = 'webrequest', $mimetype='text/html', $priority = 3, $dynamicfields = array(), $attachments = array(), $extraticketparams = array(), $extraarticleparams = array() ) {
         global $CFG;
 
         // Use default queue if not selected
@@ -126,12 +126,25 @@ class otrsgenericinterface {
 
         // Add any dynamic fields.
         foreach ($dynamicfields as $name => $value) {
-            new SoapParam(
+            $params[] = new SoapParam(
                 array(
                     'Name' => $name,
                     'Value' => $value,
                     ),
                 "DynamicField"
+            );
+        }
+        
+        // Add any attachments.
+        foreach ($attachments as $file) {
+            $base64content = base64_encode( $file->get_content() );
+            $params[] = new SoapParam(
+                array(
+                    'Content' => $base64content,
+                    'Filename' => $file->get_filename(),
+                    'ContentType' => $file->get_mimetype(),
+                    ),
+                "Attachment"
             );
         }
 
@@ -147,7 +160,7 @@ class otrsgenericinterface {
         return $TicketID;
     }
 
-    public function ArticleCreate( $Ticket, $From, $Title, $message, $sendertype = 'customer', $articletype = 'webrequest', $mimetype='text/html', $extraarticleparams = array(), $dynamicfields = array()) {
+    public function ArticleCreate( $Ticket, $From, $Title, $message, $sendertype = 'customer', $articletype = 'webrequest', $mimetype='text/html', $dynamicfields = array(), $attachments = array(), $extraarticleparams = array()) {
         $method = 'TicketUpdate';
 
         // Create article.
@@ -189,6 +202,19 @@ class otrsgenericinterface {
                 "DynamicField"
             );
         }
+        
+        // Add any attachments.
+        foreach ($attachments as $file) {
+            $base64content = base64_encode( $file->get_content() );
+            $params[] = new SoapParam(
+                array(
+                    'Content' => $base64content,
+                    'Filename' => $file->get_filename(),
+                    'ContentType' => $file->get_mimetype(),
+                    ),
+                "Attachment"
+            );
+        }
 
         // Dispatch to OTRS.
         $TicketID = $this->dispatch( $method, $params );
@@ -201,7 +227,7 @@ class otrsgenericinterface {
         return $TicketID;
     }
 
-    public function GetTicket ( $TicketID, $articles = false, $dynamicfields = false ) {
+    public function GetTicket ( $TicketID, $articles = false, $dynamicfields = false, $attachments = false ) {
         $method = 'TicketGet';
 
         $params = array(new SoapParam($TicketID, "TicketID"));
@@ -211,6 +237,9 @@ class otrsgenericinterface {
         }
         if( $dynamicfields ){
             $params[] = new SoapParam(1,"DynamicFields");
+        }
+        if( $attachments ){
+            $params[] = new SoapParam(1,"Attachments");
         }
 
         $Ticket = $this->dispatch( $method, $params );
