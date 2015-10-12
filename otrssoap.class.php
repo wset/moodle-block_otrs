@@ -77,6 +77,9 @@ class otrssoap {
             $result = false;
         }
 
+        debugging("OTRS RPC SOAP Request: " . s($this->_client->__getLastRequest()), DEBUG_DEVELOPER);
+        debugging("OTRS RPC SOAP Response: " . s($this->_client->__getLastResponse()), DEBUG_DEVELOPER);
+
         return $result;
     }
 
