@@ -64,6 +64,11 @@ $otrssoap = new otrsgenericinterface();
 $Tickets = $otrssoap->GetTicket( $TicketID, true, false, true );
 $Ticket = $Tickets[0];
 
+// check user is allowed to view ticket
+if ( $Ticket->CustomerUserID != $USER->id) {
+    require_capability( 'block/otrs:viewothers', $context );    
+}
+
 // get title
 $title = $Ticket->Title . "  <span class=\"otrs_state\">($Ticket->State)</span>";
 
