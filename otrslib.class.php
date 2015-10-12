@@ -29,18 +29,22 @@ class otrslib {
         // iterate through tickets checking
         foreach ($Tickets as $Ticket) {
 
-            // if not a closed ticket then we don't care
-            if (stripos($Ticket->State,'closed')===false) {
-                $tickets_clean[] = $Ticket;
-                continue;
-            }
-
             // check if too old
-            if ($Ticket->Age > CLOSED_MAX_AGE) {
+            if (stripos($Ticket->State,'closed')!==false && $Ticket->Age > CLOSED_MAX_AGE) {
                 continue;
-            }
-            else {
-                $tickets_clean[] = $Ticket;
+            } else {
+                // Ensure Articles are listed in an array even if there is just one.
+                if(is_array($Ticket->Article)) {
+                    $TicketArticles = $Ticket->Article;
+                } else {
+                    $TicketArticles = array($Ticket->Article);
+                }
+                foreach ($TicketArticles as $Article) {
+                    if(!(strpos($Article->ArticleType, 'internal') ) && !(strpos($Article->ArticleType, 'report') )){ // Ensure there is at least 1 article that's not internal or report.
+                        $tickets_clean[] = $Ticket;
+                        continue 2;
+                    }
+                }
             }
         }
 
@@ -54,7 +58,7 @@ class otrslib {
 
         // search for tickets
         $otrssoap = new otrsgenericinterface();
-        $TicketIDs = $otrssoap->ListTickets( $user->username );
+        $TicketIDs = $otrssoap->ListTickets( $user->username, true );
 
         // did we get any
         if (empty($TicketIDs)) {

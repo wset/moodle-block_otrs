@@ -69,23 +69,22 @@ $title = $Ticket->Title . "  <span class=\"otrs_state\">($Ticket->State)</span>"
 
 // Ensure Articles are listed in an array even if there is just one.
 if(is_array($Ticket->Article)) {
-    $Articles = $Ticket->Article;
+    $TicketArticles = $Ticket->Article;
 } else {
-    $Articles = array($Ticket->Article);
+    $TicketArticles = array($Ticket->Article);
 }
 
-// if article specified grab that,
-// otherwise it's the last one
-if (!empty($ArticleID)) {
-    $SelectedArticle = null;
-    foreach ($Articles as $Article) {
-       if ($Article->ArticleID == $ArticleID) {
-           $SelectedArticle = $Article;
-           break;
-       } 
+// select Articles for display
+$Articles = array();
+foreach ($TicketArticles as $Article) {
+    if(!(strpos($Article->ArticleType, 'internal') ) && !(strpos($Article->ArticleType, 'report') )){ // Skip internal and report articles types.
+        $Articles[] = $Article;
+    }
+    if ($Article->ArticleID == $ArticleID) {
+        $SelectedArticle = $Article;
     }
 }
-else {
+if (empty($ArticleID)) {
     $SelectedArticle = $Articles[ count($Articles)-1 ];
 }
 

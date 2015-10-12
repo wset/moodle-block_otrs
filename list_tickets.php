@@ -78,12 +78,29 @@ else {
 
 // get tickets
 $otrssoap = new otrsgenericinterface();
-$Tickets = $otrssoap->ListTickets( $user->username );
+$Tickets = $otrssoap->ListTickets( $user->username, true );
+
+$tickets_clean = array();
+
+foreach ($Tickets as $Ticket) {
+    // Ensure Articles are listed in an array even if there is just one.
+    if(is_array($Ticket->Article)) {
+        $TicketArticles = $Ticket->Article;
+    } else {
+        $TicketArticles = array($Ticket->Article);
+    }
+    foreach ($TicketArticles as $Article) {
+        if(!(strpos($Article->ArticleType, 'internal') ) && !(strpos($Article->ArticleType, 'report') )){ // Ensure there is at least 1 article that's not internal or report.
+            $tickets_clean[] = $Ticket;
+            continue 2;
+        }
+    }
+}
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading( get_string('listtickets','block_otrs' ) );
 
 echo $renderer->OpenClosed( $listurl, $state );
-echo $renderer->listTickets( $Tickets, $id, $ticketurl, $open, $closed );
+echo $renderer->listTickets( $tickets_clean, $id, $ticketurl, $open, $closed );
 
 echo $OUTPUT->footer();
