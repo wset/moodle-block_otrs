@@ -23,7 +23,7 @@ class block_otrs_renderer extends plugin_renderer_base {
         $html = '<div class="otrs_article">';
 
         // article headline
-        
+
 
 
         // close div
@@ -34,7 +34,7 @@ class block_otrs_renderer extends plugin_renderer_base {
      * display article table
      */
     static function ArticleTable( $Articles, $baseURL, $SelectedID ) {
-  
+
         // start constructing html
         $table = new html_table();
         $table->attributes = array('class' => 'table');
@@ -44,7 +44,6 @@ class block_otrs_renderer extends plugin_renderer_base {
             get_string( 'number','block_otrs' ),
             get_string( 'type','block_otrs' ),
             get_string( 'from','block_otrs' ),
-            get_string( 'to','block_otrs' ),
             get_string( 'subject','block_otrs' ),
             get_string( 'created','block_otrs' ),
             '&nbsp',
@@ -62,9 +61,8 @@ class block_otrs_renderer extends plugin_renderer_base {
             }
             $row = new html_table_row( array(
                 $count,
-                $Article->ArticleType,
-                $Article->From,
-                $Article->To,
+                $Article->SenderType . " - " . $Article->ArticleType,
+                trim(preg_split('/</',$Article->From)[0], '"'." \t\n\r\0\x0B"),  // Strip " and <> contained email addresses from From field
                 $Article->Subject,
                 $Article->Created,
                 "<a class=\"btn btn-info\" href=\"$link\">".get_string( 'view','block_otrs').'</a>',
@@ -108,7 +106,7 @@ class block_otrs_renderer extends plugin_renderer_base {
 
         $link = new moodle_url("/blocks/otrs/view_ticket.php", array('id'=>$id, 'ticket'=>$Ticket->TicketID, 'courseid'=>$courseid));
         $class = "class=\"otrsstate_{$Ticket->State}\"";
-        $html = "<li $class><a href=\"$link\">{$Ticket->Subject}</a></li>";
+        $html = "<li $class><a href=\"$link\">{$Ticket->Title}</a></li>";
 
         return $html;
     }
@@ -130,7 +128,7 @@ class block_otrs_renderer extends plugin_renderer_base {
             if ((stripos($Ticket->State,'closed')===false) and ($count<=MAX_BLOCK_OPEN)) {
                 $out .= self::BlockTicketSingle( $Ticket, $id, $courseid );
                 $count++;
-            } 
+            }
         }
         $out .= '</ul>';
 
@@ -146,7 +144,7 @@ class block_otrs_renderer extends plugin_renderer_base {
             $linkstr = get_string('fulltickets','block_otrs');
         }
         $link = new moodle_url('/blocks/otrs/list_tickets.php', array('id'=>$id, 'courseid'=>$courseid));
-        $out .= "<p><a class=\"btn btn-default\" href=\"$link\">$linkstr</a></p>";            
+        $out .= "<p><a class=\"btn btn-default\" href=\"$link\">$linkstr</a></p>";
 
         // end of open tickets bit
         $out .= '</div>';
@@ -162,7 +160,7 @@ class block_otrs_renderer extends plugin_renderer_base {
             if ((stripos($Ticket->State,'closed')!==false) and ($count<=MAX_BLOCK_CLOSED)) {
                 $out .= self::BlockTicketSingle( $Ticket, $id, $courseid );
                 $count++;
-            } 
+            }
         }
         $out .= '</ul>';
 
@@ -175,7 +173,7 @@ class block_otrs_renderer extends plugin_renderer_base {
         if ($count > MAX_BLOCK_CLOSED) {
             $linkstr = get_string('moretickets','block_otrs');
             $link = new moodle_url('/blocks/otrs/list_tickets.php', array('id'=>$id, 'courseid'=>$courseid));
-            $out .= "<p><a class=\"btn btn-default\" href=\"$link\">$linkstr</a></p>";            
+            $out .= "<p><a class=\"btn btn-default\" href=\"$link\">$linkstr</a></p>";
         }
 
         // end of closed tickets bit
@@ -189,7 +187,7 @@ class block_otrs_renderer extends plugin_renderer_base {
      */
     static function OpenClosed( $baseurl, $state ) {
         global $OUTPUT;
-    
+
         // build tabs
         $tabs = array();
         $tabs[] = new tabobject('all', "$baseurl&state=all", get_string('showall','block_otrs'));
@@ -238,7 +236,7 @@ class block_otrs_renderer extends plugin_renderer_base {
                 $count,
                 $Ticket->Created,
                 $Ticket->Priority,
-                $Ticket->Subject,
+                $Ticket->Title,
                 $Ticket->State,
                 "<a class=\"btn btn-info\" href=\"$link\">".get_string('view','block_otrs')."</a>",
             );
@@ -246,10 +244,10 @@ class block_otrs_renderer extends plugin_renderer_base {
         }
 
         $html = '<div>' . html_writer::table($table);
-        
+
         // check for nothing shown
         if ($count==1) {
-            $html .= "<center><p class=\"btn btn-info\" href=\"$link\">".get_string('notickets','block_otrs')."</p></center>";
+            $html .= "<center><p>".get_string('notickets','block_otrs')."</p></center>";
         }
 
         $html .= '</div>';
@@ -288,7 +286,7 @@ class block_otrs_renderer extends plugin_renderer_base {
         }
 
         $html = html_writer::table($table);
-        
+
         // check for nothing shown
         if ($count==1) {
             $html .= "<center><p class=\"alert alert-danger\">".get_string('nousers','block_otrs')."</p></center>";

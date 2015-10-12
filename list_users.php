@@ -10,7 +10,6 @@
  */
 
 require_once( dirname(__FILE__).'/../../config.php' );
-require_once( dirname(__FILE__).'/otrssoap.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
 
 // get parameters
@@ -50,10 +49,10 @@ $listurl = new moodle_url("/blocks/otrs/list_users.php", array('id'=>$id, 'cours
 
 // get users in current course
 $coursecontext = context_course::instance( $courseid );
-$users = get_users_by_capability( $coursecontext, 'moodle/course:view' );
+$users = get_enrolled_users( $coursecontext );
 
 // get users who have viewable tickets
-$ticketusers = otrslib::getTicketUsers( $users ); 
+$ticketusers = otrslib::getTicketUsers( $users );
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading( get_string('listusertickets','block_otrs' ) );

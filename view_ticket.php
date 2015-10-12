@@ -10,7 +10,7 @@
  */
 
 require_once( dirname(__FILE__).'/../../config.php' );
-require_once( dirname(__FILE__).'/otrssoap.class.php' );
+require_once( dirname(__FILE__).'/otrsgenericinterface.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
 
 // get parameters
@@ -60,16 +60,19 @@ else {
 }
 
 // get ticket
-$Ticket = otrslib::getTicket( $TicketID );
+$otrssoap = new otrsgenericinterface();
+$Tickets = $otrssoap->GetTicket( $TicketID, true );
+$Ticket = $Tickets[0];
 
-// get state (open, closed etc.)
-$state = $Ticket['State'];
+// get title
+$title = $Ticket->Title . "  <span class=\"otrs_state\">($Ticket->State)</span>";
 
-// get articles
-$Articles = otrslib::getArticles( $TicketID );
-
-// get heading (from first article)
-$title = $Articles[0]->Title . "  <span class=\"otrs_state\">($state)</span>";
+// Ensure Articles are listed in an array even if there is just one.
+if(is_array($Ticket->Article)) {
+    $Articles = $Ticket->Article;
+} else {
+    $Articles = array($Ticket->Article);
+}
 
 // if article specified grab that,
 // otherwise it's the last one

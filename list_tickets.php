@@ -10,7 +10,7 @@
  */
 
 require_once( dirname(__FILE__).'/../../config.php' );
-require_once( dirname(__FILE__).'/otrssoap.class.php' );
+require_once( dirname(__FILE__).'/otrsgenericinterface.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
 
 // get parameters
@@ -48,7 +48,7 @@ if ($state=='all') {
 } else if ($state=='closed') {
     $closed = true;
     $open = false;
-} 
+}
 else {
     $open = true;
     $closed = false;
@@ -77,7 +77,8 @@ else {
 }
 
 // get tickets
-$Tickets = otrslib::getBlockTickets( $user );
+$otrssoap = new otrsgenericinterface();
+$Tickets = $otrssoap->ListTickets( $user->username );
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading( get_string('listtickets','block_otrs' ) );

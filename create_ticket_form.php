@@ -20,7 +20,7 @@ class create_ticket_form extends moodleform {
 
         // get custom data passed to constructor
         $customdata = $this->_customdata;
-    
+
         // because it is
         $mform =& $this->_form;
 

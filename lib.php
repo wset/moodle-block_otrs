@@ -16,11 +16,14 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once( 'otrssoap.class.php' );
+require_once( 'otrsgenericinterface.class.php' );
 require_once( 'otrslib.class.php' );
 
 function block_otrs_user_updated($event) {
-    global $DB, $USER;
+    global $DB, $USER, $CFG;
+
+    // update user record on OTRS.
+    otrslib::userupdate($event);
 
     if ($event->id == $USER->id) {
         // user is updating themselves so we create a ticket.
@@ -46,17 +49,11 @@ function block_otrs_user_updated($event) {
 
         // create a ticket in OTRS
         $subject = 'User updated notification for ' . $event->username;
-        $message = 'User ' . $event->username . ' has updated their user details for ' . $changestring;
+        $message = 'User ' . $event->username . ' has updated their user profile as follows:<br /><br />' . $changestring;
 
-        // find/create the user in OTRS
-        $Data = otrslib::getUserId( $event );
-
-        $otrssoap = new otrssoap();
-        $TicketID = $otrssoap->TicketCreate( $subject, $Data['UserCustomerID'], $Data['UserEmail'], 'userupdate' );
-        $ArticleID = $otrssoap->ArticleCreate( $TicketID, $subject, $message, $USER->email, 'Support', 'text/plain' );
-        $success = $otrssoap->TicketCustomerSet( $TicketID, $Data['UserCustomerID'], $Data['UserLogin'] );
+        $otrssoap = new otrsgenericinterface();
+        $Ticket = $otrssoap->TicketCreate( $event->username, $subject, $message, $CFG->block_otrs_user_update_queue, 'system', 'note-report');
     }
 
-    // update user record on OTRS.
-    otrslib::userupdate($event);
+
 }

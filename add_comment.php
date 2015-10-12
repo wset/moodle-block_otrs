@@ -11,7 +11,7 @@
  */
 
 require_once( dirname(__FILE__).'/../../config.php' );
-require_once( dirname(__FILE__).'/otrssoap.class.php' );
+require_once( dirname(__FILE__).'/otrsgenericinterface.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
 require_once( dirname(__FILE__).'/add_comment_form.php' );
 
@@ -42,13 +42,12 @@ $PAGE->set_url($commenturl);
 $url = new moodle_url("/blocks/otrs/view_ticket.php", array('id'=>$id, 'ticket'=>$TicketID, 'courseid'=>$courseid));
 
 // get articles
-$Articles = otrslib::getArticles( $TicketID );
-
-// get heading (from first article)
-$title = $Articles[0]->Title;
+$otrssoap = new otrsgenericinterface();
+$Tickets = $otrssoap->GetTicket( $TicketID );
+$Ticket = $Tickets[0];
 
 // usual formslib stuff for entering data
-$mform = new add_comment_form($commenturl, array('id'=>$id, 'ticket'=>$TicketID, 'title'=>$title, 'courseid'=>$courseid));
+$mform = new add_comment_form($commenturl, array('id'=>$id, 'ticket'=>$TicketID, 'title'=>$Ticket->Title, 'courseid'=>$courseid));
 if ($mform->is_cancelled()) {
 
     // just back to form page
@@ -64,12 +63,8 @@ if ($mform->is_cancelled()) {
     $mimetype = otrslib::getMimetype( $comment['format'] );
 
     // add a comment to ticket
-    $otrssoap = new otrssoap();
-    $ArticleID = $otrssoap->ArticleCreate( $TicketID, $subject, $comment['text'], 
-        $USER->email, 'Support', $mimetype );
 
-    // re-open ticket (if it is closed)
-    otrslib::ReopenTicket( $TicketID );
+    $Ticket = $otrssoap->ArticleCreate( $TicketID, '"'. fullname($USER) .'" <'.$USER->email.'>', $subject, $comment['text']);
 
     // back to course
     redirect( $url, get_string( 'commentadded','block_otrs' ), 3 );

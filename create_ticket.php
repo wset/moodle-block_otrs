@@ -12,7 +12,7 @@
 
 
 require_once( '../../config.php' );
-require_once( 'otrssoap.class.php' );
+require_once( 'otrsgenericinterface.class.php' );
 require_once( 'otrslib.class.php' );
 require_once( 'create_ticket_form.php' );
 
@@ -52,24 +52,22 @@ if ($mform->is_cancelled()) {
     $description = $data->description;
 
 
-    // find/create the user in OTRS
-    $Data = otrslib::getUserId( $USER );
+    // ensure user is in OTRS
+    otrslib::userupdate($USER);
 
     // get mimetype from format
     $mimetype = otrslib::getMimetype( $description['format'] );
 
     // create a ticket in OTRS
-    $otrssoap = new otrssoap();
-    $TicketID = $otrssoap->TicketCreate( $subject, $Data['UserCustomerID'], $Data['UserEmail'] );
-    $ArticleID = $otrssoap->ArticleCreate( $TicketID, $subject, $description['text'], $USER->email, 'Support', $mimetype );
-    $success = $otrssoap->TicketCustomerSet( $TicketID, $Data['UserCustomerID'], $Data['UserLogin'] );
+    $otrssoap = new otrsgenericinterface();
+    $Ticket = $otrssoap->TicketCreate( $USER->username, $subject, $description['text']);
+
 
     // back to course
     $PAGE->set_url('/blocks/otrs/create_ticket.php', array('id'=>$courseid));
     echo $OUTPUT->header();
     redirect( $url, get_string( 'ticketcreated','block_otrs' ), 3 );
-}
-else {
+} else {
     // navigation
     //$PAGE->set_course($course);
     $PAGE->navbar->add(get_string('pluginname', 'block_otrs'));
