@@ -35,12 +35,17 @@ class block_otrs extends block_base {
         }
 
         // some basics
-        $courseid = $COURSE->id;
+        $courseid = $this->page->course->id;
 
         // context
         $id = $this->instance->id;
         $context = context_block::instance( $id );
 
+        $cmid = null;
+        if($this->page->cm){
+            $cmid=$this->page->cm->id;
+        }
+        
         // in case it goes all wrong
         $this->content = new stdClass;
         $this->content->footer = '';
@@ -62,7 +67,7 @@ class block_otrs extends block_base {
 
         // button to add new report
         if (has_capability( 'block/otrs:create', $context )) {
-            $this->content->text .= $renderer->newTicketButton( $id, $courseid );
+            $this->content->text .= $renderer->newTicketButton( $id, $courseid, $cmid );
         }
 
         // button to view others

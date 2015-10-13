@@ -44,6 +44,12 @@ class create_ticket_form extends moodleform {
         // hidden field
         $mform->addElement( 'hidden','id',$customdata['id'] );
         $mform->setType('id', PARAM_INT);
+        
+        $mform->addElement( 'hidden', 'courseid',$customdata['courseid']);
+        $mform->setType('courseid', PARAM_INT);
+        
+        $mform->addElement( 'hidden', 'cmid',$customdata['cmid']);
+        $mform->setType('cmid', PARAM_INT);
 
         $this->add_action_buttons();
     }

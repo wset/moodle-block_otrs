@@ -16,15 +16,30 @@ require_once( 'otrsgenericinterface.class.php' );
 require_once( 'otrslib.class.php' );
 require_once( 'create_ticket_form.php' );
 
+global $CFG;
+
 // get parameters
 $id = required_param( 'id', PARAM_INT ); // block id
+$courseid = optional_param( 'courseid', 1, PARAM_INT );  //course id
+$cmid = optional_param( 'cmid', null, PARAM_INT ); //course module
 
 // get block
 $block = $DB->get_record( 'block_instances', array('id'=>$id) );
-$courseid = $COURSE->id;
 
 // get course
 $course = $DB->get_record( 'course', array('id'=>$courseid) );
+
+// get course module
+if($cmid){
+    $modinfo = get_fast_modinfo($course);
+    $cm = $modinfo->get_cm($cmid);
+}
+
+// set url params
+$urloptions= array('id'=>$id, 'courseid'=>$courseid);
+if($cmid){
+    $urloptions['cmid'] = $cmid;
+}
 
 // security stuff
 require_login( $course );
@@ -39,7 +54,7 @@ $coursetext = 'Course name: ' . $course->fullname .'<br />';
 $coursetext .= "Course link: <a href=\"$url\">$url</a><br /><br />";
 
 // usual formslib stuff for entering data
-$mform = new create_ticket_form( null, array('id'=>$id, 'description'=>$coursetext));
+$mform = new create_ticket_form( null, array('id'=>$id, 'courseid'=>$courseid, 'description'=>$coursetext, 'cmid'=>$cmid ));
 if ($mform->is_cancelled()) {
 
     // just back to form page
@@ -63,19 +78,29 @@ if ($mform->is_cancelled()) {
     $context = context_user::instance($USER->id);
     $attachments = $fs->get_area_files($context->id, 'user', 'draft', $data->attachments, 'id DESC', false);
    
+    // Setup dynamic fields.
+    $dfields = array();
+    if(isset($CFG->block_otrs_course_dfield) && $CFG->block_otrs_course_dfield != '' && $courseid > 1) {
+        $dfields[$CFG->block_otrs_course_dfield] = $course->shortname;
+    }
+    if(isset($CFG->block_otrs_module_dfield) && $CFG->block_otrs_module_dfield != '' & !empty($cm) ) {
+        $dfields[$CFG->block_otrs_module_dfield] = $cm->name;
+    }
+   
     // create a ticket in OTRS
     $otrssoap = new otrsgenericinterface();
-    $Ticket = $otrssoap->TicketCreate( $USER->username, $subject, $description['text'], null, 'customer', 'webrequest', $mimetype, 3, array(), $attachments );
+    $Ticket = $otrssoap->TicketCreate( $USER->username, $subject, $description['text'], null, 'customer', 'webrequest', $mimetype, 3, $dfields, $attachments );
 
     // back to course
-    $PAGE->set_url('/blocks/otrs/create_ticket.php', array('id'=>$courseid));
+
+    $PAGE->set_url('/blocks/otrs/create_ticket.php', $urloptions);
     echo $OUTPUT->header();
     redirect( $url, get_string( 'ticketcreated','block_otrs' ), 3 );
 } else {
     // navigation
     //$PAGE->set_course($course);
     $PAGE->navbar->add(get_string('pluginname', 'block_otrs'));
-    $PAGE->set_url('/blocks/otrs/create_ticket.php', array('id'=>$courseid));
+    $PAGE->set_url('/blocks/otrs/create_ticket.php', $urloptions);
     $PAGE->set_heading( get_string('pluginname', 'block_otrs' ));
     $PAGE->set_pagetype('otrs');
 

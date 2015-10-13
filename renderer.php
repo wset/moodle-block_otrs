@@ -316,11 +316,15 @@ class block_otrs_renderer extends plugin_renderer_base {
     /**
      * new ticket button
      */
-    static function newTicketButton( $id, $courseid ) {
+    static function newTicketButton( $id, $courseid, $cmid ) {
         global $CFG;
 
         $strcreateticket = get_string( 'createticket','block_otrs' );
-        $url = new moodle_url('/blocks/otrs/create_ticket.php', array('id'=>$id, 'courseid'=>$courseid));
+        $options = array('id'=>$id, 'courseid'=>$courseid );
+        if($cmid){
+            $options['cmid'] = $cmid;
+        }
+        $url = new moodle_url('/blocks/otrs/create_ticket.php', $options);
         $html = '<p><a class="btn btn-info" href="'.$url.'">'.$strcreateticket.'</a></p>';
 
         return $html;
