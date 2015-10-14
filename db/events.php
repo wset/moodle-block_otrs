@@ -16,17 +16,16 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$handlers = array(
-    'user_updated' => array(
-        'handlerfile' => '/blocks/otrs/lib.php',
-        'handlerfunction' => 'block_otrs_user_updated',
-        'schedule' => 'instant',
-        'internal' => 1,
+$observers = array(
+    array(
+        'eventname' => '\core\event\user_updated',
+        'callback' => 'block_otrs_user_updated',
+        'includefile' => 'blocks/otrs/lib.php',
     ),
-    'user_created' => array(
-        'handlerfile' => '/blocks/otrs/lib.php',
-        'handlerfunction' => 'block_otrs_user_updated',
-        'schedule' => 'instant',
-        'internal' => 1,
+    array(
+        'eventname' => '\core\event\user_created',
+        'callback' => 'block_otrs_user_updated',
+        'includefile' => 'blocks/otrs/lib.php',
+    ),
     ),
 );

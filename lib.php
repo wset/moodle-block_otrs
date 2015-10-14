@@ -23,13 +23,13 @@ function block_otrs_user_updated($event) {
     global $DB, $USER, $CFG;
 
     // update user record on OTRS.
-    otrslib::userupdate($event);
+    $usernew = $event->get_record_snapshot('user', $event->objectid);
+    otrslib::userupdate($usernew);
 
-    if ($event->id == $USER->id) {
+    if ($event->objectid == $USER->id) {
         // user is updating themselves so we create a ticket.
         // What did they change?
         $userarr = (array) $USER;
-        $usernew = (array) $event;
         $changestring = '';
         foreach ($usernew as $key => $value) {
             if ($key == 'timemodified') {
@@ -48,11 +48,11 @@ function block_otrs_user_updated($event) {
         }
 
         // create a ticket in OTRS
-        $subject = 'User updated notification for ' . $event->username;
-        $message = 'User ' . $event->username . ' has updated their user profile as follows:<br /><br />' . $changestring;
+        $subject = 'User updated notification for ' . $usernew->username;
+        $message = 'User ' . $usernew->username . ' has updated their user profile as follows:<br /><br />' . $changestring;
 
         $otrssoap = new otrsgenericinterface();
-        $Ticket = $otrssoap->TicketCreate( $event->username, $subject, $message, $CFG->block_otrs_user_update_queue, 'system', 'note-report');
+        $Ticket = $otrssoap->TicketCreate( $usernew->username, $subject, $message, $CFG->block_otrs_user_update_queue, 'system', 'note-report');
     }
 
 
