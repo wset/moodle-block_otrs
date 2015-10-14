@@ -57,3 +57,9 @@ function block_otrs_user_updated($event) {
 
 
 }
+
+function block_otrs_notes_updated($event) {
+    // update user record on OTRS    
+    $user=core_user::get_user($event->relateduserid);
+    otrslib::userupdate($user,true);
+}

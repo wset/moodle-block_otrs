@@ -13,6 +13,7 @@
 
 require_once( 'otrssoap.class.php' );
 require_once( 'otrsgenericinterface.class.php' );
+require_once( dirname(__FILE__) .'/../../notes/lib.php' );
 
 define( 'CLOSED_MAX_AGE',5184000); //60 days (I think)
 
@@ -161,17 +162,21 @@ class otrslib {
 
         // get custom profile fields
         $profile = otrslib::getProfileFields( $user );
+        
+        // get site notes
+        $notes = array_merge(note_list(0, $userid->id,'public'),note_list(0, $userid->id,'site'));
+        $numnotes = count($notes);
 
         // are we adding or updating
         if (!empty( $customer )) {
             debugging( 'Updating OTRS record for '.fullname( $user ));
-            $otrssoap->CustomerUserUpdate( $user, $profile, null );
+            $otrssoap->CustomerUserUpdate( $user, $profile, null, $numnotes );
         } else if (!empty( $existinguser )){
             debugging( 'Updating existing OTRS email record for '.fullname( $user ));
-            $otrssoap->CustomerUserUpdate( $user, $profile, $existinguser);
+            $otrssoap->CustomerUserUpdate( $user, $profile, $existinguser, $numnotes );
         } else {
             debugging( 'Adding '.fullname( $user ). ' to OTRS');
-            $otrssoap->CustomerUserAdd( $user, $profile );
+            $otrssoap->CustomerUserAdd( $user, $profile , $numnotes);
         }
         return true;
     }

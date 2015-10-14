@@ -77,6 +77,8 @@
             [ 'programme_provider', 'PPV', 'programme_provider',1,0,'var','', 0],
 #            [ 'moodle_url', 'Profile', 'moodle_url',1,0,'var','http://path.to.moodle/user/view.php?id=[% Data.moodleID | url %]', 0, '_moodle'],
             [ 'moodle_url', 'Profile', 'moodle_url',1,0,'var','', 0],
+#            [ 'moodle_url', 'Profile', 'moodle_url',1,0,'var','http://path.to.moodle/notes/index.php?user=[% Data.moodleID | url %]', 0, '_moodle'],
+            [ 'notes', 'Notes', 'notes',1,0,'int','', 0]
         ],
 
         # default selections

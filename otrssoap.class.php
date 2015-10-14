@@ -127,7 +127,7 @@ class otrssoap {
      * Create a new user
      * param object $user moodle user object
      */
-    public function CustomerUserAdd( $user, $profile ) {
+    public function CustomerUserAdd( $user, $profile, $notes ) {
         global $CFG;
 
         $object = 'CustomerUserObject';
@@ -143,6 +143,7 @@ class otrssoap {
             'UserID' => $this->agentid,
             'moodle_url' => fullname( $user ),
             'moodleID' => $user->id,
+            'notes' => $notes,
             );
         self::addCustomFields( $params, $profile );
         $UserLogin = $this->dispatch( $object,$method,$params );
@@ -153,7 +154,7 @@ class otrssoap {
      * Update existing customer user
      * param object $user moodle user object
      */
-    public function CustomerUserUpdate( $user, $profile, $olduser ) {
+    public function CustomerUserUpdate( $user, $profile, $olduser, $notes ) {
         global $CFG;
 
         $object = 'CustomerUserObject';
@@ -170,6 +171,7 @@ class otrssoap {
             'UserID' => $this->agentid,
             'moodle_url' => fullname( $user ),
             'moodleID' => $user->id,
+            'notes' => $notes,
             );
 
         //  Change userlogins for existing accounts

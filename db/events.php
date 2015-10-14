@@ -27,5 +27,14 @@ $observers = array(
         'callback' => 'block_otrs_user_updated',
         'includefile' => 'blocks/otrs/lib.php',
     ),
+    array(
+        'eventname' => '\core\event\note_created',
+        'callback' => 'block_otrs_notes_updated',
+        'includefile' => 'blocks/otrs/lib.php',
+    ),
+    array(
+        'eventname' => '\core\event\note_deleted',
+        'callback' => 'block_otrs_notes_updated',
+        'includefile' => 'blocks/otrs/lib.php',
     ),
 );
