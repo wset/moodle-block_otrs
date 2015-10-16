@@ -18,7 +18,7 @@ if ($ADMIN->fulltree) {
     $settings->add( new admin_setting_heading( 'queuesconfig', get_string('defaultqueues','block_otrs'), get_string('defaultqueuesdesc','block_otrs')) );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/queue', get_string('queue','block_otrs'), get_string('queueconfig','block_otrs'), 'moodle') );
-    
+
     $settings->add( new admin_setting_configtext( 'block_otrs/create_queues', get_string('createqueue','block_otrs'), get_string('createqueueconfig','block_otrs'), "{{'queue': 'moodle'}}"));
 
     $settings->add( new admin_setting_configtext( 'block_otrs/quiz_queue', get_string('quizqueue','block_otrs'), get_string('quizqueueconfig','block_otrs'), 'moodle') );
@@ -26,10 +26,10 @@ if ($ADMIN->fulltree) {
     $settings->add( new admin_setting_configtext( 'block_otrs/completion_queue', get_string('completionqueue','block_otrs'), get_string('completionqueueconfig','block_otrs'), 'moodle') );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/user_update_queue', get_string('userupdatequeue','block_otrs'), get_string('userupdatequeueconfig','block_otrs'), 'moodle') );
-    
+
     $settings->add( new admin_setting_configtext( 'block_otrs/course_dfield', get_string('coursedfield','block_otrs'), get_string('coursedfielddesc','block_otrs'), ''));
 
-    
+
     // SOAP RPC Connector settings.
     $settings->add( new admin_setting_heading( 'rpcconfig', get_string('rpcsettings','block_otrs'), get_string('rpcsettingsdesc','block_otrs')) );
 
@@ -40,7 +40,7 @@ if ($ADMIN->fulltree) {
     $settings->add( new admin_setting_configpasswordunmask( 'block_otrs/rpcpassword', get_string('otrspassword','block_otrs'), get_string('otrspasswordconfig','block_otrs'), '') );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/userfields', get_string('userfields','block_otrs'), get_string('userfieldsconfig','block_otrs'), '') );
-        
+
     $defaultuserkeys = array_keys( (array) $USER );
     $userkeys = array_combine($defaultuserkeys, $defaultuserkeys);
     $settings->add( new admin_setting_configmultiselect( 'block_otrs/usermatchfields', get_string('usermatchfields', 'block_otrs'), get_string('usermatchfieldsconfig', 'block_otrs'), $defaultuserkeys, $userkeys));

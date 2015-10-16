@@ -162,7 +162,7 @@ class otrslib {
 
         // get custom profile fields
         $profile = otrslib::getProfileFields( $user );
-        
+
         // get site notes
         $notes = array_merge(note_list(0, $userid->id,'public'),note_list(0, $userid->id,'site'));
         $numnotes = count($notes);

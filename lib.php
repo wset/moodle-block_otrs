@@ -16,6 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+define( 'MAX_PROFILE',5 );
+
 require_once( 'otrsgenericinterface.class.php' );
 require_once( 'otrslib.class.php' );
 
@@ -67,7 +69,53 @@ function block_otrs_user_updated($event) {
 }
 
 function block_otrs_notes_updated($event) {
-    // update user record on OTRS    
+    // update user record on OTRS
     $user=core_user::get_user($event->relateduserid);
     otrslib::userupdate($user,true);
+}
+
+
+function block_otrs_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    global $PAGE;
+
+    $context = context_user::instance( $user->id );
+    $content = '';
+
+    if(has_capability( 'block/otrs:viewothers',$context)) {
+        $Tickets = otrslib::getBlockTickets( $user );
+
+        if(count($Tickets)) {
+            $category = new core_user\output\myprofile\category('tickets', get_string('usertickets', 'block_otrs'), null);
+            $tree->add_category($category);
+
+            $count = 1;
+            foreach($Tickets as $Ticket) {
+                if($count<=MAX_PROFILE) {
+                    $urlparams = array('ticket'=>$Ticket->TicketID);
+                    if(isset($course->id)) {
+                        $urlparams['courseid'] = $course->id;
+                    }
+                    $link = new moodle_url("/blocks/otrs/view_ticket.php", $urlparams);
+                    $node = new core_user\output\myprofile\node('tickets','ticket'.$Ticket->TicketID, $Ticket->Title, null, $link);
+                    $tree->add_node($node);
+                    $count++;
+                }
+            }
+
+            if ($count > MAX_PROFILE) {
+                $linkstr = get_string('moretickets','block_otrs');
+            } else {
+                $linkstr = get_string('fulltickets','block_otrs');
+            }
+
+            $urlparams = array('userid'=>$user->id);
+            if(isset($course->id)) {
+                $urlparams['courseid'] = $course->id;
+            }
+            $link = new moodle_url('/blocks/otrs/list_tickets.php', $urlparams);
+
+            $node = new core_user\output\myprofile\node('tickets','fulltickets', $linkstr, null, $link);
+            $tree->add_node($node);
+        }
+    }
 }

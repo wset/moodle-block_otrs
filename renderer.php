@@ -93,9 +93,9 @@ class block_otrs_renderer extends plugin_renderer_base {
 
     static function AttachmentList ( $Attachments ) {
         global $OUTPUT;
-        
+
         // layout
-        
+
         $html = '<div class="alert alert-success">';
         $html .= '<h4>'.get_string( 'attachments', 'block_otrs').'</h4>';
         $html .= "<ul class\"otrs_attachment_list\">";
@@ -104,10 +104,10 @@ class block_otrs_renderer extends plugin_renderer_base {
         }
         $html .= "</ul>";
         $html .= "</div>";
-        
+
         return $html;
     }
-    
+
     /**
      * comment button
      */

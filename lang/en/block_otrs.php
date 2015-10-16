@@ -89,6 +89,7 @@ $string['userfieldsconfig'] = 'e.g. local1=OTRS1,local2=OTRS2 (use profile field
 $string['usermatchfields'] = 'Monitored fields';
 $string['usermatchfieldsconfig'] = 'Field changes to notify.';
 $string['username'] = 'User name';
+$string['usertickets'] = 'Help Desk Tickets';
 $string['userupdatequeue'] = 'OTRS queue for user update notifications';
 $string['userupdatequeueconfig'] = 'OTRS queue to add tickets for user update notifications';
 $string['view'] = 'view..';

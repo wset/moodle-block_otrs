@@ -43,7 +43,7 @@ class block_otrs extends block_base {
         if($this->page->cm){
             $cmid=$this->page->cm->id;
         }
-        
+
         // in case it goes all wrong
         $this->content = new stdClass;
         $this->content->footer = '';

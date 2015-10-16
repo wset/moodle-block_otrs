@@ -14,21 +14,30 @@ require_once( dirname(__FILE__).'/otrsgenericinterface.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
 
 // get parameters
-$id = required_param( 'id', PARAM_INT ); // block id note
+$id = optional_param( 'id', null, PARAM_INT ); // block id note
 $TicketID = required_param( 'ticket', PARAM_INT );
 $ArticleID = optional_param( 'article',0,PARAM_INT );
 $userid = optional_param( 'user',0,PARAM_INT );
-$courseid = required_param('courseid', PARAM_INT);
+$courseid = optional_param('courseid', 1, PARAM_INT);
 
-// get block
-$block = $DB->get_record('block_instances', array('id'=>$id), '*', MUST_EXIST);
+
 
 // get course
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
 
 // security stuff
 require_login( $course );
-$context = context_block::instance( $id );
+if( $id ){
+    // get block
+    $block = $DB->get_record('block_instances', array('id'=>$id), '*', MUST_EXIST);
+    $context = context_block::instance( $id );
+} else if ( $courseid ) {
+    $context = context_user::instance( $courseid );
+} else if ( $userid ) {
+    $context = context_user::instance( $userid );
+} else {
+    $context = context_system::instance();
+}
 require_capability( 'block/otrs:view', $context );
 
 // navigation
@@ -66,7 +75,7 @@ $Ticket = $Tickets[0];
 
 // check user is allowed to view ticket
 if ( $Ticket->CustomerUserID != $USER->id) {
-    require_capability( 'block/otrs:viewothers', $context );    
+    require_capability( 'block/otrs:viewothers', $context );
 }
 
 // get title
@@ -105,7 +114,7 @@ echo $renderer->SingleArticle( $SelectedArticle, $format );
 
 if( isset($SelectedArticle->Attachment) ) {
     if( is_array($SelectedArticle->Attachment) ) {
-        $attachments = $SelectedArticle->Attachment; 
+        $attachments = $SelectedArticle->Attachment;
     } else {
         $attachments = array($SelectedArticle->Attachment);
     }

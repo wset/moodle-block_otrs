@@ -14,20 +14,27 @@ require_once( dirname(__FILE__).'/otrsgenericinterface.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
 
 // get parameters
-$id = required_param( 'id', PARAM_INT ); // block id
+$id = optional_param( 'id', null, PARAM_INT ); // block id
 $state = optional_param( 'state','open', PARAM_ALPHA );
 $userid = optional_param( 'user', 0, PARAM_INT );
-$courseid = required_param('courseid', PARAM_INT);
-
-// get block
-$block = $DB->get_record( 'block_instances', array('id'=>$id), '*', MUST_EXIST );
+$courseid = optional_param('courseid', 1, PARAM_INT);
 
 // get course
 $course = $DB->get_record( 'course', array('id'=>$courseid), '*', MUST_EXIST );
 
 // security stuff
 require_login( $course );
-$context = context_block::instance( $id );
+if( $id ){
+    // get block
+    $block = $DB->get_record('block_instances', array('id'=>$id), '*', MUST_EXIST);
+    $context = context_block::instance( $id );
+} else if ( $courseid ) {
+    $context = context_user::instance( $courseid );
+} else if ( $userid ) {
+    $context = context_user::instance( $userid );
+} else {
+    $context = context_system::instance();
+}
 require_capability( 'block/otrs:view', $context );
 
 // navigation
