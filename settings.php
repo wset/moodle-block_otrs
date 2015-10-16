@@ -12,6 +12,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
+    global $USER;
 
     // Default Queues section.
     $settings->add( new admin_setting_heading( 'queuesconfig', get_string('defaultqueues','block_otrs'), get_string('defaultqueuesdesc','block_otrs')) );
@@ -39,6 +40,10 @@ if ($ADMIN->fulltree) {
     $settings->add( new admin_setting_configpasswordunmask( 'block_otrs/rpcpassword', get_string('otrspassword','block_otrs'), get_string('otrspasswordconfig','block_otrs'), '') );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/userfields', get_string('userfields','block_otrs'), get_string('userfieldsconfig','block_otrs'), '') );
+        
+    $defaultuserkeys = array_keys( (array) $USER );
+    $userkeys = array_combine($defaultuserkeys, $defaultuserkeys);
+    $settings->add( new admin_setting_configmultiselect( 'block_otrs/usermatchfields', get_string('usermatchfields', 'block_otrs'), get_string('usermatchfieldsconfig', 'block_otrs'), $defaultuserkeys, $userkeys));
 
 
     // SOAP Generic Interface settings.

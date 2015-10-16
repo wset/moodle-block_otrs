@@ -25,34 +25,42 @@ function block_otrs_user_updated($event) {
     // update user record on OTRS.
     $usernew = $event->get_record_snapshot('user', $event->objectid);
     otrslib::userupdate($usernew);
+    $umatchfields = get_config('block_otrs','usermatchfields');
 
-    if ($event->objectid == $USER->id) {
+    if ($event->objectid == $USER->id && $umatchfields) {
         // user is updating themselves so we create a ticket.
         // What did they change?
         $userarr = (array) $USER;
         $changestring = '';
+        $ufields = explode(',',$umatchfields);
         foreach ($usernew as $key => $value) {
             if ($key == 'timemodified') {
                 continue;
             }
+
             if (isset($userarr[$key]) && ($userarr[$key] != $value)) {
-                if ($key == 'password') {
-                    $changestring .= get_string('password'). ",<br />";
-                } if ($key == 'country') {
-                    $countries = get_string_manager()->get_list_of_countries(false);
-                    $changestring .= get_string('country') . " - " . $countries[$value] . ",<br />";
-                }else {
-                    $changestring .= get_string($key) . " - " . $value . ",<br />";
+                if(array_search($key,$ufields)) {
+                    if ($key == 'password') {
+                        $changestring .= get_string('password'). ",<br />";
+                    } else if ($key == 'country') {
+                        $countries = get_string_manager()->get_list_of_countries(false);
+                        $changestring .= get_string('country') . " - " . $countries[$value] . ",<br />";
+                    } else {
+                        $changestring .= get_string($key) . " - " . $value . ",<br />";
+                    }
                 }
+
             }
         }
 
         // create a ticket in OTRS
-        $subject = 'User updated notification for ' . $usernew->username;
-        $message = 'User ' . $usernew->username . ' has updated their user profile as follows:<br /><br />' . $changestring;
+        if($changestring != '') {
+            $subject = 'User updated notification for ' . $usernew->username;
+            $message = 'User ' . $usernew->username . ' has updated their user profile as follows:<br /><br />' . $changestring;
 
-        $otrssoap = new otrsgenericinterface();
-        $Ticket = $otrssoap->TicketCreate( $usernew->username, $subject, $message, $CFG->block_otrs_user_update_queue, 'system', 'note-report');
+            $otrssoap = new otrsgenericinterface();
+            $Ticket = $otrssoap->TicketCreate( $usernew->username, $subject, $message, get_config('block_otrs','user_update_queue'), 'system', 'note-report');
+        }
     }
 
 

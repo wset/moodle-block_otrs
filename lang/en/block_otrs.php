@@ -86,6 +86,8 @@ $string['url'] = 'RPC Connector url';
 $string['urlconfig'] = 'OTRS rpc.pl path';
 $string['userfields'] = 'User field mappings';
 $string['userfieldsconfig'] = 'e.g. local1=OTRS1,local2=OTRS2 (use profile field shortnames.  Custom fields should be prefixed by profile_field_  i.e. profile_field_<em>name</em>)';
+$string['usermatchfields'] = 'Monitored fields';
+$string['usermatchfieldsconfig'] = 'Field changes to notify.';
 $string['username'] = 'User name';
 $string['userupdatequeue'] = 'OTRS queue for user update notifications';
 $string['userupdatequeueconfig'] = 'OTRS queue to add tickets for user update notifications';
