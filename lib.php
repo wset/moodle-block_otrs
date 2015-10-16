@@ -20,7 +20,7 @@ require_once( 'otrsgenericinterface.class.php' );
 require_once( 'otrslib.class.php' );
 
 function block_otrs_user_updated($event) {
-    global $DB, $USER, $CFG;
+    global $DB, $USER;
 
     // update user record on OTRS.
     $usernew = $event->get_record_snapshot('user', $event->objectid);

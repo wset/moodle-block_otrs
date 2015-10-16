@@ -80,11 +80,13 @@ if ($mform->is_cancelled()) {
    
     // Setup dynamic fields.
     $dfields = array();
-    if(isset($CFG->block_otrs_course_dfield) && $CFG->block_otrs_course_dfield != '' && $courseid > 1) {
-        $dfields[$CFG->block_otrs_course_dfield] = $course->shortname;
+    $cdfield = get_config('block_otrs','course_dfield');
+    if($cdfield && $cdfield != '' && $courseid > 1) {
+        $dfields[$cdfield] = $course->shortname;
     }
-    if(isset($CFG->block_otrs_module_dfield) && $CFG->block_otrs_module_dfield != '' & !empty($cm) ) {
-        $dfields[$CFG->block_otrs_module_dfield] = $cm->name;
+    $mdfield = get_config('block_otrs','module_dfield');
+    if($mdfield && $mdfield != '' & !empty($cm) ) {
+        $dfields[$mdfield] = $cm->name;
     }
    
     // create a ticket in OTRS

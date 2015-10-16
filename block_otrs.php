@@ -10,9 +10,7 @@
  */
 
 
-//require_once( dirname(__FILE__).'/otrssoap.class.php' );
 require_once( dirname(__FILE__).'/otrslib.class.php' );
-//require_once( dirname(__FILE__).'/otrsgenericinterface.class.php');
 
 class block_otrs extends block_base {
     function init() {

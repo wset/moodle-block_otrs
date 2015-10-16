@@ -117,7 +117,7 @@ class otrslib {
      * Get all (any?) profile fields for a user
      */
     static function getProfileFields( $user ) {
-        global $CFG, $DB;
+        global $DB;
 
         $sql = "select shortname, data from {user_info_data} as uid, {user_info_field} as uif ";
         $sql .= "where uid.fieldid=uif.id and userid=?";

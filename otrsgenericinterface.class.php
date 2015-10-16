@@ -33,11 +33,11 @@ class otrsgenericinterface {
         global $CFG;
 
         $params = array(
-            'location' => $CFG->block_otrs_giurl,
-            'uri' => $CFG->block_otrs_gins,
+            'location' => get_config('block_otrs','giurl'),
+            'uri' => get_config('block_otrs','gins'),
             'trace' => 1,
-            'login' => $CFG->block_otrs_giuser,
-            'password' => $CFG->block_otrs_gipassword,
+            'login' => get_config('block_otrs','giuser'),
+            'password' => get_config('block_otrs', 'gipassword'),
             'style' => SOAP_RPC,
             'use' => SOAP_ENCODED
             );
@@ -54,10 +54,8 @@ class otrsgenericinterface {
     }
 
     private function dispatch( $method, $params ) {
-        global $CFG;
-
         // prepend username and password to soap parameters.
-        array_unshift($params, new SoapParam($CFG->block_otrs_giuser,"UserLogin"), new SoapParam($CFG->block_otrs_gipassword,"Password"));
+        array_unshift($params, new SoapParam(get_config('block_otrs','giuser'),"UserLogin"), new SoapParam(get_config('block_otrs','gipassword'),"Password"));
 
         // do soap call
         try {
@@ -87,11 +85,9 @@ class otrsgenericinterface {
     }
 
     public function TicketCreate( $Customer, $Title, $message, $queue , $sendertype = 'customer', $articletype = 'webrequest', $mimetype='text/html', $priority = 3, $dynamicfields = array(), $attachments = array(), $extraticketparams = array(), $extraarticleparams = array() ) {
-        global $CFG;
-
         // Use default queue if not selected
         if(empty($queue)){
-            $queue = $CFG->block_otrs_queue;
+            $queue = get_config('block_otrs','queue');
         }
 
         $method = 'TicketCreate';
@@ -134,7 +130,7 @@ class otrsgenericinterface {
                 "DynamicField"
             );
         }
-        
+
         // Add any attachments.
         foreach ($attachments as $file) {
             $base64content = base64_encode( $file->get_content() );
@@ -202,7 +198,7 @@ class otrsgenericinterface {
                 "DynamicField"
             );
         }
-        
+
         // Add any attachments.
         foreach ($attachments as $file) {
             $base64content = base64_encode( $file->get_content() );

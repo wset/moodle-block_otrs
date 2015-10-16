@@ -20,11 +20,11 @@ class otrssoap {
         $this->agentid = 1;
 
         $params = array(
-            'location' => $CFG->block_otrs_url,
+            'location' => get_config('block_otrs','rpcurl'),
             'uri' => 'Core',
             'trace' => 1,
-            'login' => $CFG->block_otrs_otrsuser,
-            'password' => $CFG->block_otrs_otrspassword,
+            'login' => get_config('block_otrs','rpcuser'),
+            'password' => get_config('block_otrs','rpcpassword'),
             'style' => SOAP_RPC,
             'use' => SOAP_ENCODED
             );
@@ -41,12 +41,11 @@ class otrssoap {
     }
 
     private function dispatch( $object, $method, $params ) {
-        global $CFG;
 
         // construct array of params for call
         $p = array();
-        $p[] = $CFG->block_otrs_otrsuser;
-        $p[] = $CFG->block_otrs_otrspassword;
+        $p[] = get_config('block_otrs','rpcuser');
+        $p[] = get_config('block_otrs','rpcpassword');
         $p[] = $object;
         $p[] = $method;
 
@@ -128,8 +127,6 @@ class otrssoap {
      * param object $user moodle user object
      */
     public function CustomerUserAdd( $user, $profile, $notes ) {
-        global $CFG;
-
         $object = 'CustomerUserObject';
         $method = 'CustomerUserAdd';
         $params = array(
@@ -155,8 +152,6 @@ class otrssoap {
      * param object $user moodle user object
      */
     public function CustomerUserUpdate( $user, $profile, $olduser, $notes ) {
-        global $CFG;
-
         $object = 'CustomerUserObject';
         $method = 'CustomerUserUpdate';
         $params = array(
