@@ -17,6 +17,8 @@ if ($ADMIN->fulltree) {
     $settings->add( new admin_setting_heading( 'queuesconfig', get_string('defaultqueues','block_otrs'), get_string('defaultqueuesdesc','block_otrs')) );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/queue', get_string('queue','block_otrs'), get_string('queueconfig','block_otrs'), 'moodle') );
+    
+    $settings->add( new admin_setting_configtext( 'block_otrs/create_queues', get_string('createqueue','block_otrs'), get_string('createqueueconfig','block_otrs'), "{{'queue': 'moodle'}}"));
 
     $settings->add( new admin_setting_configtext( 'block_otrs/quiz_queue', get_string('quizqueue','block_otrs'), get_string('quizqueueconfig','block_otrs'), 'moodle') );
 
