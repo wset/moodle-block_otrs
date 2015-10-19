@@ -23,6 +23,10 @@ if ($ADMIN->fulltree) {
 
     $settings->add( new admin_setting_configtext( 'block_otrs/quiz_queue', get_string('quizqueue','block_otrs'), get_string('quizqueueconfig','block_otrs'), 'moodle') );
 
+    $settings->add( new admin_setting_configtext( 'block_otrs/qgrade_dfield', get_string('qgradedfield','block_otrs'), get_string('qgradedfielddesc','block_otrs'), ''));
+
+    $settings->add( new admin_setting_configtext( 'block_otrs/qmark_dfield', get_string('qmarkdfield','block_otrs'), get_string('qmarkdfielddesc','block_otrs'), ''));
+
     $settings->add( new admin_setting_configtext( 'block_otrs/completion_queue', get_string('completionqueue','block_otrs'), get_string('completionqueueconfig','block_otrs'), 'moodle') );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/user_update_queue', get_string('userupdatequeue','block_otrs'), get_string('userupdatequeueconfig','block_otrs'), 'moodle') );
