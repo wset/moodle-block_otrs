@@ -32,6 +32,8 @@ if ($ADMIN->fulltree) {
     $settings->add( new admin_setting_configtext( 'block_otrs/user_update_queue', get_string('userupdatequeue','block_otrs'), get_string('userupdatequeueconfig','block_otrs'), 'moodle') );
 
     $settings->add( new admin_setting_configtext( 'block_otrs/course_dfield', get_string('coursedfield','block_otrs'), get_string('coursedfielddesc','block_otrs'), ''));
+    
+    $settings->add( new admin_setting_configtext( 'block_otrs/module_dfield', get_string('moduledfield','block_otrs'), get_string('moduledfielddesc','block_otrs'), ''));
 
 
     // SOAP RPC Connector settings.

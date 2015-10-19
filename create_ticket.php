@@ -88,7 +88,6 @@ foreach ($queues as $myqueue){
             $match = false;
             foreach ($myqueue['restriction']['category'] as $value) {
                 $coursecat = coursecat::get($course->category);
-                debugging($coursecat->path);
                 $catpath = explode('/',$coursecat->path);
                 foreach( $catpath as $pathcategory ) {
                     if( $pathcategory == $value ) {
@@ -144,8 +143,9 @@ if ($mform->is_cancelled()) {
     if($cdfield && $cdfield != '' && $courseid > 1) {
         $dfields[$cdfield] = $course->shortname;
     }
+    
     $mdfield = get_config('block_otrs','module_dfield');
-    if($mdfield && $mdfield != '' & !empty($cm) ) {
+    if($mdfield && $mdfield != '' & isset($cm) ) {
         $dfields[$mdfield] = $cm->name;
     }
 
