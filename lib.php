@@ -82,7 +82,7 @@ function block_otrs_myprofile_navigation(core_user\output\myprofile\tree $tree, 
     $content = '';
 
     if(has_capability( 'block/otrs:viewothers',$context)) {
-        $Tickets = otrslib::getBlockTickets( $user );
+        $Tickets = otrslib::getBlockTickets( $user, false, MAX_PROFILE +1 );
 
         if(count($Tickets)) {
             $category = new core_user\output\myprofile\category('tickets', get_string('usertickets', 'block_otrs'), null);

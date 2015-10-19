@@ -252,7 +252,7 @@ class otrsgenericinterface {
         return false;
     }
 
-    public function ListTickets ( $Customer, $articles = false, $dynamicfields = false ) {
+    public function ListTickets ( $Customer, $articles = false, $dynamicfields = false, $num = null ) {
         $method = 'TicketSearch';
 
         $params = array(new SoapParam($Customer, "CustomerUserLogin"));
@@ -260,7 +260,11 @@ class otrsgenericinterface {
         $Tickets = $this->dispatch( $method, $params );
 
         if(is_array($Tickets) && isset($Tickets['TicketID'])) {
-            debugging(count($Tickets['TicketID']). " tickets found.");
+            $count = count($Tickets['TicketID']);
+            debugging($count. " tickets found.");
+            if($num && $count > $num ){
+                $Tickets['TicketID'] = array_slice($Tickets['TicketID'],0,$num);
+            }
             $ReturnTickets = $this->GetTicket( $Tickets['TicketID'], $articles, $dynamicfields );
             return $ReturnTickets;
         } else if (isset($Tickets->TicketNumber)) {

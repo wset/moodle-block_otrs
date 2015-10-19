@@ -55,7 +55,7 @@ class block_otrs extends block_base {
         }
 
         // search for current user's tickets
-        $Tickets = otrslib::getBlockTickets( $USER );
+        $Tickets = otrslib::getBlockTickets( $USER, false, MAX_BLOCK_OPEN +1 );
 
         // display tickets
         $renderer = $this->page->get_renderer('block_otrs');

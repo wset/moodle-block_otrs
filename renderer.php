@@ -9,8 +9,7 @@
  * @package block_otrs
  */
 
-define( 'MAX_BLOCK_OPEN',5 );
-define( 'MAX_BLOCK_CLOSED',5 );
+require_once( dirname(__FILE__).'/otrslib.class.php' );
 
 class block_otrs_renderer extends plugin_renderer_base {
 

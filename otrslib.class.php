@@ -16,20 +16,26 @@ require_once( 'otrsgenericinterface.class.php' );
 require_once( dirname(__FILE__) .'/../../notes/lib.php' );
 
 define( 'CLOSED_MAX_AGE',5184000); //60 days (I think)
+define( 'MAX_BLOCK_OPEN',5 );
+define( 'MAX_BLOCK_CLOSED',5 );
 
 class otrslib {
 
     /**
      * Delete closed tickets that are too old
      */
-    private static function deleteAgedTickets( $Tickets ) {
+    private static function deleteAgedTickets( $Tickets, $num ) {
 
         // array to hold cleaned up list
         $tickets_clean = array();
+        $count = 0;
 
         // iterate through tickets checking
         foreach ($Tickets as $Ticket) {
-
+            if( $num && $count > $num ) {
+                break;
+            }
+        
             // check if too old
             if (stripos($Ticket->State,'closed')!==false && $Ticket->Age > CLOSED_MAX_AGE) {
                 continue;
@@ -43,6 +49,7 @@ class otrslib {
                 foreach ($TicketArticles as $Article) {
                     if(!(strpos($Article->ArticleType, 'internal') ) && !(strpos($Article->ArticleType, 'report') )){ // Ensure there is at least 1 article that's not internal or report.
                         $tickets_clean[] = $Ticket;
+                        $count ++;
                         continue 2;
                     }
                 }
@@ -55,18 +62,18 @@ class otrslib {
     /**
      * Get the tickets for block display
      */
-    static function getBlockTickets( $user ) {
+    static function getBlockTickets( $user, $dfields = false, $num = null ) {
 
         // search for tickets
         $otrssoap = new otrsgenericinterface();
-        $TicketIDs = $otrssoap->ListTickets( $user->username, true );
+        $TicketIDs = $otrssoap->ListTickets( $user->username, true, $dfields );
 
         // did we get any
         if (empty($TicketIDs)) {
             return false;
         }
 
-        return self::deleteAgedTickets( $TicketIDs );
+        return self::deleteAgedTickets( $TicketIDs, $num );
     }
 
     /**
