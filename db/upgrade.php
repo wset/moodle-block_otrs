@@ -73,4 +73,8 @@ function xmldb_block_otrs_upgrade($oldversion) {
         }
         upgrade_block_savepoint(true, 2015101500, 'otrs');
     }
+
+    if($oldversion < 2015101904) {
+         upgrade_block_savepoint(true, 2015101904, 'otrs');
+    }       
 }

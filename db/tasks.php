@@ -14,18 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version details
- *
- * @package    block
- * @subpackage otrs
- * @copyright  2012-2014 Howard Miller
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+defined('MOODLE_INTERNAL') || die;
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2015101904;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014051200;        // Requires Moodle 2.7
-$plugin->component = 'block_otrs';     // Full name of the plugin (used for diagnostics)
-$plugin->release   = '2.0 for Moodle 2.7+ and OTRS v4.0+';
+$tasks = array(
+    array(
+        'classname' => 'block_otrs\task\otrs_sync',
+        'blocking' => 0,
+        'minute' => '00',
+        'hour' => '03',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*'
+    )
+);

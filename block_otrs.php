@@ -91,22 +91,6 @@ class block_otrs extends block_base {
      * TODO: think of some way to only sync new users
      */
     function clicron() {
-        global $DB;
-
-        mtrace( 'OTRS: starting sync' );
-
-        // get all ids for active users
-        // just ids to keep memory down
-        $userids = $DB->get_records( 'user', array('deleted'=>0), '', 'id' );
-        mtrace( 'processing users - '.count($userids) );
-
-        // run through users
-        echo "\n";
-        foreach ($userids as $userid) {
-            mtrace( 'Updating '.$userid);
-            otrslib::userupdate($userid);
-        }
-
         return true;
     }
 }

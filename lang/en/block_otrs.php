@@ -82,6 +82,7 @@ $string['showclosed'] = 'Show closed tickets';
 $string['showopen'] = 'Show open tickets';
 $string['state'] = 'State';
 $string['subject'] = 'Subject';
+$string['sync_task'] = 'Sync users to OTRS';
 $string['ticketcreated'] = 'New support ticket created';
 $string['ticketqueue'] = 'To';
 $string['to'] = 'To';
