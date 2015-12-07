@@ -55,6 +55,7 @@ $string['notickets'] = '-no tickets-';
 $string['nousers'] = '-no users-';
 $string['number'] = 'No.';
 $string['onlyshown'] = 'Only users with tickets shown.';
+$string['otrs:addinstance'] = 'Add a new help desk block';
 $string['otrs:addcomment'] = 'Add a comment to an existing ticket';
 $string['otrs:create'] = 'Create a new helpdesk ticket';
 $string['otrs:view'] = 'View your own tickets';
